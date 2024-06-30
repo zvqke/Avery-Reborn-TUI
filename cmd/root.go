@@ -24,9 +24,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Initialize your Bubble Tea model
-		model := internal.Model{
-			Todos: todos,
-		}
+		model := internal.NewModel(todos)
 
 		// Start the Bubble Tea program
 		p := tea.NewProgram(model)
