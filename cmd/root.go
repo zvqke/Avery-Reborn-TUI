@@ -1,11 +1,10 @@
-// cmd/root.go
 package cmd
 
 import (
 	"fmt"
 	"os"
 
-	"Avery-Reborn-TUI/internal" // Replace with your actual package path
+	"Avery-Reborn-TUI/internal"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
