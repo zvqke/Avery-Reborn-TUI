@@ -113,7 +113,7 @@ func (m Model) View() string {
     s.WriteString("\nPress 'a' to add a todo, \nPress 'l' to list todos, \nPress 'd' to delete the selected todo, \nPress 'm' to mark/unmark the selected todo, \n\nPress Ctrl+C to quit.\n")
     s.WriteString("Press 'Esc' to go back.")
     if m.Focused {
-        s.WriteString("\nNew Todo:\n")
+        s.WriteString("\n\nNew Todo:\n")
         s.WriteString(m.TextInput.View())
     }
 
