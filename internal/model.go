@@ -67,6 +67,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
                     m.TextInput.SetValue("") // Clear the input field
                 }
                 m.Focused = false // Unfocus after adding todo
+            case "esc":
+                m.Focused = false
+                m.TextInput.Blur() // Unfocus the text input
             default:
                 m.TextInput, cmd = m.TextInput.Update(msg)
             }
@@ -107,7 +110,8 @@ func (m Model) View() string {
         s.WriteString("\n")
     }
 
-    s.WriteString("\nPress 'a' to add a todo, 'l' to list todos, 'd' to delete the selected todo, 'm' to mark/unmark the selected todo, and Ctrl+C to quit.\n")
+    s.WriteString("\nPress 'a' to add a todo, \nPress 'l' to list todos, \nPress 'd' to delete the selected todo, \nPress 'm' to mark/unmark the selected todo, \n\nPress Ctrl+C to quit.\n")
+    s.WriteString("Press 'Esc' to go back.")
     if m.Focused {
         s.WriteString("\nNew Todo:\n")
         s.WriteString(m.TextInput.View())
