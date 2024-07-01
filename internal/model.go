@@ -3,6 +3,7 @@ package internal
 import (
     "fmt"
     "strings"
+    "time"
 
     "github.com/charmbracelet/bubbles/textinput"
     tea "github.com/charmbracelet/bubbletea"
@@ -11,9 +12,10 @@ import (
 
 // Todo represents a single todo item.
 type Todo struct {
-    ID   int
-    Text string
-    Done bool
+    ID      int
+    Text    string
+    Done    bool
+    DueDate time.Time // New field for due date
 }
 
 // Model represents the Bubble Tea model.
@@ -27,7 +29,7 @@ type Model struct {
 
 // Init initializes the model.
 func (m Model) Init() tea.Cmd {
-    return textinput.Blink
+    return tea.Batch(textinput.Blink, CheckDueTodos())
 }
 
 // Update handles messages and updates the model.
@@ -63,8 +65,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
             switch msg.String() {
             case "enter":
                 if text := strings.TrimSpace(m.TextInput.Value()); text != "" {
-                    m.Todos = append(m.Todos, Todo{ID: len(m.Todos) + 1, Text: text, Done: false})
-                    m.TextInput.SetValue("") // Clear the input field
+                    m.Todos = append(m.Todos, Todo{ID: len(m.Todos) + 1, Text: text, Done: false, DueDate: time.Now().Add(24 * time.Hour)}) // Set a default due date
+                    m.TextInput.SetValue("")                                                                                                // Clear the input field
                 }
                 m.Focused = false // Unfocus after adding todo
             case "esc":
@@ -85,6 +87,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
                 m.DeleteID = 1
             }
         }
+    case CheckDueTodosMsg:
+        // Check for todos due today and delete them if not marked as done
+        for i := 0; i < len(m.Todos); i++ {
+            if !m.Todos[i].Done && m.Todos[i].DueDate.Before(time.Now()) {
+                m.Todos = append(m.Todos[:i], m.Todos[i+1:]...)
+                i-- // adjust index after deletion
+            }
+        }
+        cmd = tea.Tick(time.Minute, func(time.Time) tea.Msg {
+            return CheckDueTodosMsg{}
+        })
     }
 
     return m, cmd
@@ -139,4 +152,14 @@ func NewModel(todos []Todo) Model {
         DeleteID:  0,
         Listing:   false,
     }
+}
+
+// CheckDueTodosMsg is a custom message type to trigger due todos check.
+type CheckDueTodosMsg struct{}
+
+// CheckDueTodos is a command to check for due todos.
+func CheckDueTodos() tea.Cmd {
+    return tea.Tick(time.Minute, func(time.Time) tea.Msg {
+        return CheckDueTodosMsg{}
+    })
 }
