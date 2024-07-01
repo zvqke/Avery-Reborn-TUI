@@ -17,11 +17,7 @@ var rootCmd = &cobra.Command{
 		fmt.Println("Starting Todo App...")
 
 		// Initialize your todos slice
-		todos := []internal.Todo{
-			// {ID: 1, Text: "Task 1", Done: false},
-			// {ID: 2, Text: "Task 2", Done: true},
-			// Add more todos as needed
-		}
+		todos := []internal.Todo{}
 
 		// Initialize your Bubble Tea model
 		model := internal.NewModel(todos)

@@ -44,6 +44,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
                     m.DeleteID = 0
                 }
                 m.Listing = false
+            case "m":
+                if m.DeleteID > 0 && m.DeleteID <= len(m.Todos) {
+                    m.Todos[m.DeleteID-1].Done = !m.Todos[m.DeleteID-1].Done
+                }
             case "esc":
                 m.Listing = false
             case "up":
@@ -103,7 +107,7 @@ func (m Model) View() string {
         s.WriteString("\n")
     }
 
-    s.WriteString("\nPress 'a' to add a todo, 'l' to list todos, 'd' to delete the selected todo, and Ctrl+C to quit.\n")
+    s.WriteString("\nPress 'a' to add a todo, 'l' to list todos, 'd' to delete the selected todo, 'm' to mark/unmark the selected todo, and Ctrl+C to quit.\n")
     if m.Focused {
         s.WriteString("\nNew Todo:\n")
         s.WriteString(m.TextInput.View())
