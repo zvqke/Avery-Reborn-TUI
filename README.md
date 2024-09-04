@@ -1,3 +1,3 @@
 # Avery Reborn TUI
  
-- Simple command line interface.
+- Simple command line interface along with a todo app built in.
